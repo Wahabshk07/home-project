@@ -12,7 +12,7 @@ export const FeatureItem = ({ title, description, icon }: FeatureItemProps) => {
     <div className="flex flex-col mb-12 w-full items-start text-left">
       
       {/* Row 1: Icon (Left Aligned) */}
-      <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-[#3b82f6]/10 text-[#3b82f6] mb-4 shadow-sm border border-[#3b82f6]/20">
+      <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-cyan-500/10 text-cyan-600 mb-4 shadow-sm border border-cyan-500/20">
         {icon}
       </div>
 

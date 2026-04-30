@@ -30,8 +30,8 @@ export default function SubscribeForm() {
         text: 'You have successfully subscribed to our newsletter.',
         icon: 'success',
         background: '#FFFFFF',
-        iconColor: '#DC2626',
-        confirmButtonColor: '#DC2626',
+        iconColor: '#0891b2',
+        confirmButtonColor: '#0891b2',
         color: '#0F172A',
         customClass: {
           popup: 'rounded-2xl border border-gray-100',
@@ -54,9 +54,9 @@ export default function SubscribeForm() {
 
   const getMessageStyles = () => {
     switch (message?.type) {
-      case 'info': return "border-blue-200 bg-blue-50 text-blue-700";
+      case 'info': return "border-cyan-200 bg-cyan-50 text-cyan-700";
       case 'warning': return "border-amber-200 bg-amber-50 text-amber-700";
-      default: return "border-red-200 bg-red-50 text-red-700";
+      default: return "border-cyan-200 bg-cyan-50 text-cyan-700";
     }
   };
 

@@ -32,14 +32,14 @@ return (
       <div className="flex flex-col md:flex-row md:items-end ml-10 justify-between gap-6 mb-8">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-50 text-red-600">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-50 text-cyan-600">
               <Sparkles size={14} />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-red-600">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-600">
               Premium Listings
             </span>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-red-600">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-cyan-600">
             Featured <span className="text-slate-400 font-light">Opportunities</span>
           </h2>
           <p className="max-w-xl text-sm md:text-base text-slate-500 leading-relaxed">
@@ -49,10 +49,10 @@ return (
 
         <Link 
           href="/jobs" 
-          className="group flex items-center gap-2 text-sm font-bold text-slate-900 transition-all hover:text-red-600"
+          className="group flex items-center gap-2 text-sm font-bold text-slate-900 transition-all hover:text-cyan-600"
         >
           Explore all jobs 
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 transition-all group-hover:bg-red-600 group-hover:text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 transition-all group-hover:bg-cyan-600 group-hover:text-white">
             <ArrowRight size={16} />
           </span>
         </Link>

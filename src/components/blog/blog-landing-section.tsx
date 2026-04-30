@@ -34,11 +34,11 @@ export async function BlogLandingSection() {
         {/* --- Section Header --- */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
-            <div className="flex items-center gap-2 text-red-600 mb-2">
+            <div className="flex items-center gap-2 text-cyan-600 mb-2">
                 <Sparkles size={18} fill="currentColor" />
                 <span className="text-xs font-black uppercase tracking-[0.3em]">The Front Page</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase text-red-600">
+            <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase text-cyan-600">
                 Latest Blogs
             </h2>
           </div>

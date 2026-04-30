@@ -39,7 +39,7 @@ export function JobCard({
   return (
     <Link
       href={`/jobs/${slug}`}
-      className="group flex flex-col gap-4 p-5 transition-colors hover:bg-red-50/40 sm:flex-row sm:items-center"
+      className="group flex flex-col gap-4 p-5 transition-colors hover:bg-cyan-50/40 sm:flex-row sm:items-center"
     >
       {/* Logo */}
       <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">

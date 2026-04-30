@@ -33,7 +33,7 @@ const AmericaNeedNursingSection = () => {
           viewport={{ once: true }}
           className="flex flex-col space-y-5"
         >
-          <motion.span variants={item} className="text-red-600 font-bold tracking-widest uppercase text-xs">
+          <motion.span variants={item} className="text-cyan-600 font-bold tracking-widest uppercase text-xs">
             Connect • Hire • Grow
           </motion.span>
 
@@ -72,7 +72,7 @@ const AmericaNeedNursingSection = () => {
 
           <motion.div variants={item} className="pt-4 flex flex-wrap gap-4">
            <Link href="/jobs">
-            <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-bold transition-all  active:scale-95 flex items-center gap-2">
+            <button className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-3 rounded-xl font-bold transition-all  active:scale-95 flex items-center gap-2">
               Browse Jobs
               <ArrowRight size={18} />
             </button>
@@ -123,7 +123,7 @@ const AmericaNeedNursingSection = () => {
 
               {/* Verified Badge */}
               <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
-                <CheckCircle2 className="text-red-600" size={16} />
+                <CheckCircle2 className="text-cyan-600" size={16} />
                 <span className="text-xs font-bold text-slate-900">Verified Platform</span>
               </div>
             </div>
@@ -136,9 +136,9 @@ const AmericaNeedNursingSection = () => {
 };
 
 // Compact Feature Sub-component
-const MiniFeature = ({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) => (
+  const MiniFeature = ({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) => (
   <div className="flex gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
-    <div className="text-red-600 bg-red-50 p-2 rounded-lg h-fit group-hover:bg-red-600 group-hover:text-white transition-colors">
+    <div className="text-cyan-600 bg-cyan-50 p-2 rounded-lg h-fit group-hover:bg-cyan-600 group-hover:text-white transition-colors">
       {icon}
     </div>
     <div>
