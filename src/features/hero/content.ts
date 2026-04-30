@@ -4,24 +4,24 @@
  */
 export const heroContent = {
   image: {
-    src: "/hero/images.png" as const,
-    alt: "Professional working in a modern office",
-    width: 512,
-    height: 303,
+    src: "/hero/images.jpg" as const,
+    alt: "Professional nurse in modern healthcare facility",
+    width: 1920,
+    height: 1080,
   },
-  eyebrow: "Get Hot & Trending Jobs",
-  title: "Real Jobs, Real People, Real Success",
+  eyebrow: "Professional Nursing Careers",
+  title: "Find Your Next Opportunity in Healthcare",
   subtitle:
-    "Getting a new job is never easy. Check what new jobs we have in store for you on JobStock.",
+    "Discover thousands of nursing positions across America's leading healthcare facilities. Connect with employers seeking your expertise and advance your career today.",
   stats: [
-    { digits: "200", accent: "M", label: "Active Jobs" },
-    { digits: "40", accent: "K", label: "Startups" },
-    { digits: "340", accent: "K", label: "Talents" },
+    { digits: "5,000", accent: "+", label: "Active Positions" },
+    { digits: "1,200", accent: "+", label: "Healthcare Facilities" },
+    { digits: "50,000", accent: "+", label: "Nurses Placed" },
   ],
   searchCard: {
-    titleBefore: "Grow Your Career With ",
-    submitLabel: "Search Result",
-    keywordPlaceholder: "Search Job Keywords...",
+    titleBefore: "Start Your Search on ",
+    submitLabel: "Search Positions",
+    keywordPlaceholder: "Job Title, Specialty...",
     selects: {
       category: {
         label: "Job Category",

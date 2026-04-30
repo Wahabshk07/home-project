@@ -26,27 +26,28 @@ export function HeroSection() {
 
       <div className="absolute inset-0 z-10 flex flex-col justify-center px-4 pb-28 pt-28 sm:px-6 sm:pb-32 sm:pt-32 lg:px-8 lg:pb-36">
         <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-2 lg:items-center lg:gap-12 xl:gap-16">
-          <div className="max-w-xl text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] lg:max-w-none">
-            <p className="inline-flex items-center rounded-md bg-button px-4 py-2 text-sm font-semibold text-white shadow-sm">
+          <div className="max-w-2xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)] lg:max-w-none">
+            <div className="inline-flex items-center rounded-full bg-white/15 backdrop-blur-md px-4 py-2 text-xs font-semibold text-white shadow-lg border border-white/20">
+              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-cyan-400"></span>
               {eyebrow}
-            </p>
-            <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[2.75rem] xl:text-6xl">
+            </div>
+            <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-5xl xl:text-7xl">
               {title}
             </h1>
-            <p className="mt-5 max-w-lg text-base leading-relaxed text-white/90 sm:text-lg">{subtitle}</p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/95 sm:text-xl">{subtitle}</p>
 
-            <div className="mt-10 grid max-w-md grid-cols-3 gap-6 sm:gap-8">
+            <div className="mt-12 grid max-w-md grid-cols-3 gap-8 sm:gap-10">
               {stats.map((item, index) => (
-                <div key={item.label}>
-                  <p className="text-2xl font-bold text-white sm:text-3xl md:text-4xl">
+                <div key={item.label} className="border-l border-white/20 pl-6 first:border-0 first:pl-0">
+                  <p className="text-3xl font-bold text-white sm:text-4xl md:text-5xl">
                     <HeroStatCount
                       target={Number(item.digits)}
                       suffix={item.accent}
-                      suffixClassName="text-button"
+                      suffixClassName="text-cyan-300 text-2xl"
                       delayMs={index * 140}
                     />
                   </p>
-                  <p className="mt-1 text-xs text-white/80 sm:text-sm">{item.label}</p>
+                  <p className="mt-3 text-xs text-white/75 font-medium uppercase tracking-wide sm:text-sm">{item.label}</p>
                 </div>
               ))}
             </div>

@@ -59,7 +59,7 @@ function SelectField({
     <div>
       <label
         htmlFor={`hero-${name}`}
-        className="mb-1.5 block text-xs font-medium text-gray-900"
+        className="mb-2 block text-xs font-semibold text-slate-700 uppercase tracking-wide"
       >
         {label}
       </label>
@@ -68,7 +68,7 @@ function SelectField({
           id={`hero-${name}`}
           name={name}
           defaultValue={defaultValue}
-          className="w-full cursor-pointer appearance-none rounded-lg border border-blue-200/80 bg-white py-2.5 pl-3 pr-10 text-sm text-black shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+          className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-white py-3 pl-4 pr-10 text-sm text-slate-900 shadow-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 hover:border-slate-300"
         >
           {options.map((opt) => (
             <option key={`${name}-${opt.value || "__all"}`} value={opt.value}>
@@ -76,7 +76,7 @@ function SelectField({
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-blue-400/80" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-slate-400" />
       </div>
     </div>
   );
@@ -92,12 +92,12 @@ export function HeroSearchCard() {
   const s = searchCard.selects;
 
   return (
-    <div className="rounded-2xl border border-primary/25 bg-white/95 p-6 shadow-[0_24px_64px_-16px_rgba(15,23,42,0.35)] backdrop-blur-sm md:p-8">
-      <h2 className="text-center text-lg font-bold text-button md:text-xl">
+    <div className="rounded-3xl border border-white/20 bg-white/98 p-6 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.4)] backdrop-blur-xl md:p-8">
+      <h2 className="text-center text-base font-semibold text-slate-700 md:text-lg">
         {searchCard.titleBefore}
-        <span className="text-button">{siteConfig.brandMarkParts.america}</span>{" "}
-        <span className="text-button">{siteConfig.brandMarkParts.needs}</span>{" "}
-        <span className="text-button">{siteConfig.brandMarkParts.nurses}</span>
+        <span className="text-cyan-600 font-bold">{siteConfig.brandMarkParts.america}</span>{" "}
+        <span className="text-cyan-600 font-bold">{siteConfig.brandMarkParts.needs}</span>{" "}
+        <span className="text-cyan-600 font-bold">{siteConfig.brandMarkParts.nurses}</span>
       </h2>
 
       <form
@@ -122,13 +122,13 @@ export function HeroSearchCard() {
             Search keywords
           </label>
           <div className="relative">
-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-blue-400/90" />
+            <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <input
               id="hero-q"
               type="search"
               name="q"
               placeholder={searchCard.keywordPlaceholder}
-              className="w-full rounded-lg border border-blue-200/80 bg-white py-3 pl-11 pr-3 text-sm text-black shadow-sm outline-none placeholder:text-gray-500 focus:border-primary focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 hover:border-slate-300"
             />
           </div>
         </div>
