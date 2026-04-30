@@ -1,0 +1,80 @@
+/**
+ * Home hero — copy, image, stats, and job search card fields.
+ * Image: `public/hero/images.jpg` → `/hero/images.jpg`
+ */
+export const heroContent = {
+  image: {
+    src: "/hero/images.png" as const,
+    alt: "Professional working in a modern office",
+    width: 512,
+    height: 303,
+  },
+  eyebrow: "Get Hot & Trending Jobs",
+  title: "Real Jobs, Real People, Real Success",
+  subtitle:
+    "Getting a new job is never easy. Check what new jobs we have in store for you on JobStock.",
+  stats: [
+    { digits: "200", accent: "M", label: "Active Jobs" },
+    { digits: "40", accent: "K", label: "Startups" },
+    { digits: "340", accent: "K", label: "Talents" },
+  ],
+  searchCard: {
+    titleBefore: "Grow Your Career With ",
+    submitLabel: "Search Result",
+    keywordPlaceholder: "Search Job Keywords...",
+    selects: {
+      category: {
+        label: "Job Category",
+        name: "category" as const,
+        /** `value` is sent in the URL and matched against listing category / text. */
+        options: [
+          { value: "", label: "All categories" },
+          { value: "Critical care", label: "Critical care (ICU)" },
+          { value: "Emergency", label: "Emergency (ED)" },
+          { value: "Med-Surg", label: "Med-Surg" },
+          { value: "Operating room", label: "Operating room (OR)" },
+          { value: "Pediatrics", label: "Pediatrics" },
+          { value: "Home health", label: "Home health" },
+          { value: "Case management", label: "Case management" },
+          { value: "Administration", label: "Administration" },
+        ],
+      },
+      jobType: {
+        label: "Job Type",
+        name: "employment" as const,
+        options: [
+          { value: "", label: "All types" },
+          { value: "full_time", label: "Full time" },
+          { value: "part_time", label: "Part time" },
+          { value: "contract", label: "Contract" },
+          { value: "per_diem", label: "Per diem" },
+          { value: "temporary", label: "Temporary / travel" },
+        ],
+      },
+      level: {
+        label: "Job Level",
+        name: "level" as const,
+        options: [
+          { value: "", label: "All levels" },
+          { value: "intern", label: "Intern / student" },
+          { value: "entry", label: "Entry / junior" },
+          { value: "mid", label: "Mid level" },
+          { value: "senior", label: "Senior" },
+          { value: "lead", label: "Lead / charge" },
+          { value: "executive", label: "Management / executive" },
+        ],
+      },
+      experience: {
+        label: "Experience",
+        name: "experience" as const,
+        options: [
+          { value: "", label: "Any experience" },
+          { value: "1", label: "1+ years" },
+          { value: "2", label: "2+ years" },
+          { value: "3", label: "3+ years" },
+          { value: "5", label: "5+ years" },
+        ],
+      },
+    },
+  },
+} as const;
