@@ -17,7 +17,7 @@ const NursePromoBanner = () => {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="max-w-6xl mx-auto p-4 md:p-8"
         >
-          <div className="relative bg-[#f4f4f4] rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 group transition-all duration-300 hover:shadow-xl hover:shadow-red-600/5">
+          <div className="relative bg-[#f4f4f4] rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 group transition-all duration-300 hover:shadow-xl hover:shadow-cyan-600/5">
             
             {/* Close Button */}
            
@@ -28,15 +28,15 @@ const NursePromoBanner = () => {
               <div className="w-full md:w-2/5 p-2 md:p-4">
                 <div className="relative h-64 md:h-80 w-full rounded-2xl overflow-hidden shadow-inner">
                   {/* Replace with your actual image path */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-red-600/20 to-transparent z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600/20 to-transparent z-10" />
                   <img 
                     src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop" 
                     alt="Nurses Event"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   {/* Floating Badge (Extra Modern Touch) */}
-                  <div className="absolute bottom-4 left-4 z-20 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-red-100">
-                    <p className="text-[10px] font-bold text-red-600 uppercase tracking-widest">Annual Event</p>
+                  <div className="absolute bottom-4 left-4 z-20 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-cyan-100">
+                    <p className="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">Annual Event</p>
                   </div>
                 </div>
               </div>
@@ -50,7 +50,7 @@ const NursePromoBanner = () => {
                   className="text-2xl md:text-4xl font-bold text-gray-900 leading-tight mb-4"
                 >
                   National Nurses Week <br />
-                  <span className="text-red-600 underline decoration-red-200 decoration-4 underline-offset-4">
+                  <span className="text-cyan-600 underline decoration-cyan-200 decoration-4 underline-offset-4">
                     Virtual Event
                   </span>
                 </motion.h2>
@@ -75,7 +75,7 @@ const NursePromoBanner = () => {
                 >
                   <a 
                     href="/register" 
-                    className="group inline-flex items-center gap-2 text-red-600 font-extrabold text-sm tracking-widest uppercase hover:text-red-700 transition-colors"
+                    className="group inline-flex items-center gap-2 text-cyan-600 font-extrabold text-sm tracking-widest uppercase hover:text-cyan-700 transition-colors"
                   >
                     Register Today
                     <motion.span

@@ -34,12 +34,12 @@ const NewsletterSection = () => {
         <div className="relative overflow-hidden bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 grid lg:grid-cols-5">
           
           {/* Decorative Background Element */}
-          <div className="absolute top-0 left-0 w-32 h-32 bg-red-50 rounded-full -translate-x-16 -translate-y-16 blur-3xl opacity-50" />
+          <div className="absolute top-0 left-0 w-32 h-32 bg-cyan-50 rounded-full -translate-x-16 -translate-y-16 blur-3xl opacity-50" />
 
           {/* Left Side: Content - Reduced padding from p-14 to p-8/10 */}
           <div className="lg:col-span-3 p-6 md:p-8 lg:p-10 flex flex-col justify-center relative z-10">
             <motion.div variants={itemVariants} className="flex items-center gap-2 mb-3">
-              <span className="px-2.5 py-0.5 bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-widest rounded-full">
+              <span className="px-2.5 py-0.5 bg-cyan-50 text-cyan-600 text-[10px] font-bold uppercase tracking-widest rounded-full">
                 Newsletter
               </span>
               <span className="text-gray-400 text-[10px] font-medium uppercase tracking-widest">
