@@ -13,8 +13,11 @@ import { UserAvatar } from "@/components/user-avatar";
 import { ImageCropperModal } from "./image-crop-modal"; 
 import { useAuth } from "@/contexts/auth-context";
 import {
-  getAccountMe, patchAccountMe, uploadMyProfilePhoto,
-  changeAccountPassword
+  getAccountMe,
+  patchAccountMe,
+  uploadMyProfilePhoto,
+  uploadMyProfileBanner,
+  changeAccountPassword,
 } from "@/lib/api/account-api";
 import { isStaffAdminAccount } from "@/lib/api/auth-api";
 import { BackendRequestError } from "@/lib/api/authed-client";
@@ -44,8 +47,6 @@ export function ProfileUpdateForm() {
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const heroInputRef = useRef<HTMLInputElement>(null);
-  const nurseBannerInputRef = useRef<HTMLInputElement>(null);
-
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [isHydrating, setIsHydrating] = useState(true);
@@ -78,9 +79,13 @@ export function ProfileUpdateForm() {
   const [pendingHero, setPendingHero] = useState<File | null>(null);
   const [heroPreview, setHeroPreview] = useState<string | null>(null);
   const [logoLoadError, setLogoLoadError] = useState(false);
-  const [nurseBannerUrl, setNurseBannerUrl] = useState<string | null>(null);
   const [passwords, setPasswords] = useState({ current: "", new: "", confirm: "" });
-  const [cropper, setCropper] = useState<{ show: boolean; image: string; aspect: number; type: "profile" | "logo" | "hero"; }>({ show: false, image: "", aspect: 1, type: "profile" });
+  const [cropper, setCropper] = useState<{
+    show: boolean;
+    image: string;
+    aspect: number;
+    type: "profile" | "logo" | "hero" | "banner";
+  }>({ show: false, image: "", aspect: 1, type: "profile" });
 
   const isAdmin = user ? isStaffAdminAccount(user.role) : false;
   const isNurse = user?.role === "nurse";
@@ -101,6 +106,7 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
         { key: "city", label: "Location" },
         { key: "resumeUrl", label: "Resume PDF" },
         { key: "profilePhotoUrl", label: "Profile Photo" },
+        { key: "profileBannerUrl", label: "Profile Banner" },
       ]
     : [
         { key: "companyName", label: "Company Name" },
@@ -164,8 +170,9 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
     return `${base}${base.includes('?') ? '&' : '?'}cache=${refreshKey}`;
   };
 
-  const nurseBannerStorageKey = user ? `ann_nurse_banner_${user.id}` : null;
-  const nurseBannerImage = isNurse ? nurseBannerUrl || resolveImageUrl(user?.profilePhotoUrl ?? null) : null;
+  const nurseBannerImage = isNurse
+    ? resolveImageUrl(user?.profileBannerUrl ?? null)
+    : null;
 
   const loadData = useCallback(async () => {
     if (!accessToken || !user) return;
@@ -201,22 +208,37 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
           setResumeUrl(np.resumeUrl || null);
         } catch (e) {}
       }
-      updateUser({ ...user, fullName: me.fullName, profilePhotoUrl: me.profilePhotoUrl });
+      updateUser({
+        ...user,
+        fullName: me.fullName,
+        profilePhotoUrl: me.profilePhotoUrl,
+        profileBannerUrl: me.profileBannerUrl ?? null,
+      });
       setRefreshKey(Date.now());
     } catch (e) { console.error("Hydration failed", e); } finally { setIsHydrating(false); }
   }, [accessToken, user?.id, updateUser]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: "profile" | "logo" | "hero") => {
+  const onFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "profile" | "logo" | "hero" | "banner",
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      setCropper({ show: true, image: reader.result as string, aspect: type === "hero" ? 16 / 6 : 1, type });
+      const aspect =
+        type === "hero" || type === "banner" ? 16 / 6 : 1;
+      setCropper({
+        show: true,
+        image: reader.result as string,
+        aspect,
+        type,
+      });
     };
     reader.readAsDataURL(file);
-    e.target.value = ""; 
+    e.target.value = "";
   };
 
   const handleCropComplete = async (blob: Blob) => {
@@ -238,6 +260,27 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
       setPendingHero(file);
       if (heroPreview) URL.revokeObjectURL(heroPreview);
       setHeroPreview(URL.createObjectURL(file));
+    } else if (cropper.type === "banner") {
+      setIsBusy(true);
+      try {
+        const me = await uploadMyProfileBanner(accessToken!, file);
+        updateUser({
+          ...user!,
+          profileBannerUrl: me.profileBannerUrl ?? null,
+        });
+        setRefreshKey(Date.now());
+        Swal.fire({
+          title: "Banner saved",
+          icon: "success",
+          timer: 1200,
+          showConfirmButton: false,
+        });
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : "Upload failed";
+        Swal.fire("Error", msg, "error");
+      } finally {
+        setIsBusy(false);
+      }
     }
   };
 
@@ -294,17 +337,6 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
       {/* Hidden Inputs */}
       <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={(e) => onFileChange(e, 'logo')} />
       <input type="file" ref={heroInputRef} className="hidden" accept="image/*" onChange={(e) => onFileChange(e, 'hero')} />
-      <input type="file" ref={nurseBannerInputRef} className="hidden" accept="image/*" onChange={(e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          setNurseBannerUrl(reader.result as string);
-          if (nurseBannerStorageKey) localStorage.setItem(nurseBannerStorageKey, reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      }} />
-
       {/* HEADER CARD */}
       <div className="relative mb-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         {/* Banner */}
@@ -315,12 +347,15 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
             <div className="h-full w-full bg-gradient-to-r from-red-600 to-rose-500 opacity-90" />
           )}
           {isNurse && (
-            <button
-              onClick={() => nurseBannerInputRef.current?.click()}
-              className="absolute right-6 top-6 flex items-center gap-2 rounded-full bg-black/30 px-4 py-2 text-xs font-bold text-white backdrop-blur-md hover:bg-black/50 transition-all"
-            >
+            <label className="absolute right-6 top-6 flex cursor-pointer items-center gap-2 rounded-full bg-black/30 px-4 py-2 text-xs font-bold text-white backdrop-blur-md transition-all hover:bg-black/50">
               <Camera size={16} /> Edit Banner
-            </button>
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => onFileChange(e, "banner")}
+              />
+            </label>
           )}
         </div>
 
@@ -404,6 +439,7 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
               city,
               resumeUrl: resumeUrl || pendingResumeFile,
               profilePhotoUrl: user.profilePhotoUrl,
+              profileBannerUrl: user.profileBannerUrl,
               companyName,
               companyLogoUrl: companyLogoUrl || pendingLogo,
               companyEmail,
@@ -662,7 +698,7 @@ function ProfileStrengthCard({ role, data, onAction }: ProfileStrengthProps) {
         <ImageCropperModal
           image={cropper.image}
           aspect={cropper.aspect}
-          title={`Crop ${cropper.type}`}
+          title={`Crop ${cropper.type === "banner" ? "banner" : cropper.type}`}
           onClose={() => setCropper(p => ({ ...p, show: false }))}
           onCropComplete={handleCropComplete}
         />

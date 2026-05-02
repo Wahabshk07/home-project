@@ -1,42 +1,56 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { 
-  Search, 
-  ChevronDown, 
-  ChevronUp, 
-  X, 
-  Filter, 
+import {
+  Search,
+  ChevronDown,
+  ChevronUp,
+  X,
+  Filter,
   Briefcase,
   Layers,
-  BarChart,
   Clock,
   MapPin,
   ChevronRight,
+  DollarSign,
 } from "lucide-react";
 
 import { PublicPagination } from "@/components/public/public-pagination";
 import type { JobBrowseFilters } from "@/lib/job-browse-search-params";
-import { buildJobBrowseSearchParams, parseJobBrowseFilters } from "@/lib/job-browse-search-params";
+import { buildJobBrowseSearchParams, emptyJobBrowseFilters, parseJobBrowseFilters } from "@/lib/job-browse-search-params";
+import type { JobMapMarker } from "@/lib/api/public-api";
 import type { PaginatedMeta, PublicJob } from "@/lib/api/types";
 import { heroContent } from "@/features/hero/content";
 import {
   EMPLOYMENT_TYPE_OPTIONS,
-  JOB_LEVEL_OPTIONS,
+  JOB_BROWSE_SALARY_OPTIONS,
+  JOB_TITLE_FILTER_OPTIONS,
   jobListingMetaLine,
   jobRoleDetailEntries,
+  jobTitleFilterMatches,
   type JobEmploymentType,
-  type JobLevel,
 } from "@/lib/job-posting-metadata";
 import { blogCoverSrc } from "@/lib/blog-cover-image";
+import { US_STATES, usStateByCode } from "@/lib/us-states";
+
+const JobsBrowseMap = dynamic(() => import("./jobs-browse-map"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[280px] items-center justify-center rounded-2xl border border-gray-100 bg-slate-50">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-red-600" />
+    </div>
+  ),
+});
 
 type JobsBrowseWithFiltersProps = {
   jobs: PublicJob[];
   error: string | null;
   meta: PaginatedMeta;
   initialFilters: JobBrowseFilters;
+  mapMarkers: JobMapMarker[];
 };
 
 /** --- Helper Logic (Unchanged) --- **/
@@ -51,6 +65,16 @@ function jobMatchesExperience(job: PublicJob, exp: string): boolean {
   if (n >= 5) return /\b(5|6|7|8|9|10)\+?\s*(yr|year|yrs|years)\b/.test(blob) || /\b5\+\s*(yr|year|yrs)/.test(blob);
   const re = new RegExp(`\\b(${n}|${n}\\+)\\s*(yr|year|yrs|years)\\b`, "i");
   return re.test(blob) || blob.includes(`${n}+ year`);
+}
+
+function jobMatchesState(job: PublicJob, stateCode: string): boolean {
+  const code = stateCode.trim().toUpperCase();
+  if (!code) return true;
+  if (job.stateCode?.trim().toUpperCase() === code) return true;
+  const meta = usStateByCode(code);
+  const loc = job.location?.toLowerCase() ?? "";
+  if (meta && loc.includes(meta.name.toLowerCase())) return true;
+  return loc.includes(code.toLowerCase());
 }
 
 /** --- Sub-component for Modern Sidebar Sections --- **/
@@ -70,7 +94,13 @@ const FilterSection = ({ title, icon: Icon, children, defaultOpen = false }: { t
   );
 };
 
-export function JobsBrowseWithFilters({ jobs, error, meta, initialFilters }: JobsBrowseWithFiltersProps) {
+export function JobsBrowseWithFilters({
+  jobs,
+  error,
+  meta,
+  initialFilters,
+  mapMarkers,
+}: JobsBrowseWithFiltersProps) {
   const router = useRouter();
   const sp = useSearchParams();
   const spKey = sp.toString();
@@ -87,14 +117,17 @@ export function JobsBrowseWithFilters({ jobs, error, meta, initialFilters }: Job
   }, [router]);
 
   const employmentType = (filters.employment || "") as JobEmploymentType | "";
-  const jobLevel = (filters.level || "") as JobLevel | "";
 
   const filtered = useMemo(() => {
     const q = normalize(filters.q);
     const cat = normalize(filters.category);
+    const salary = filters.salary.trim();
+    const jt = filters.jobTitle.trim();
     return jobs.filter((job) => {
       if (employmentType && job.employmentType !== employmentType) return false;
-      if (jobLevel && job.jobLevel !== jobLevel) return false;
+      if (salary && (job.expectedSalaryRange ?? "") !== salary) return false;
+      if (!jobTitleFilterMatches(job.title, jt)) return false;
+      if (!jobMatchesState(job, filters.state)) return false;
       if (cat) {
         const jc = normalize(job.jobCategory ?? "");
         if (!jc.includes(cat) && !normalize(job.title).includes(cat)) return false;
@@ -104,17 +137,25 @@ export function JobsBrowseWithFilters({ jobs, error, meta, initialFilters }: Job
       const hay = [job.title, job.company?.name ?? "", job.jobCategory ?? "", job.location ?? "", job.description ?? ""].join(" ").toLowerCase();
       return hay.includes(q);
     });
-  }, [jobs, filters, employmentType, jobLevel]);
+  }, [jobs, filters, employmentType]);
 
-  const hasActiveFilters = Object.values(filters).some(v => v !== "");
+  const hasActiveFilters = Object.values(filters).some((v) => v !== "");
 
   const clearFilters = () => {
-    const cleared = { q: "", category: "", employment: "", level: "", experience: "" };
+    const cleared = emptyJobBrowseFilters();
     setFilters(cleared);
     pushUrl(cleared, 1);
   };
   const experienceOptions = heroContent.searchCard.selects.experience.options;
   const categoryOptions = heroContent.searchCard.selects.category.options;
+
+  const markersForMap = useMemo(() => {
+    const st = filters.state.trim().toUpperCase();
+    if (!st) return mapMarkers;
+    return mapMarkers.filter(
+      (m) => (m.stateCode ?? "").trim().toUpperCase() === st,
+    );
+  }, [mapMarkers, filters.state]);
 
   const hrefForPage = (page: number) => `/jobs${buildJobBrowseSearchParams(filters, page)}`;
 
@@ -202,26 +243,97 @@ export function JobsBrowseWithFilters({ jobs, error, meta, initialFilters }: Job
             </div>
           </FilterSection>
 
-          <FilterSection title="Job Level" icon={BarChart}>
-            <div className="flex flex-col gap-1 mt-2">
+          <FilterSection title="State" icon={MapPin} defaultOpen>
+            <div className="mt-2 flex max-h-52 flex-col gap-1 overflow-y-auto pr-1">
               <button
                 type="button"
-                onClick={() => { const next = { ...filters, level: "" }; setFilters(next); pushUrl(next, 1); }}
-                className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                  !jobLevel ? 'bg-red-50 text-red-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                onClick={() => {
+                  const next = { ...filters, state: "" };
+                  setFilters(next);
+                  pushUrl(next, 1);
+                }}
+                className={`rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+                  !filters.state.trim()
+                    ? "bg-red-50 font-semibold text-red-700"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
-                All levels
+                All states
               </button>
-              {JOB_LEVEL_OPTIONS.map((o) => (
+              {US_STATES.map((s) => (
+                <button
+                  key={s.code}
+                  type="button"
+                  onClick={() => {
+                    const next = { ...filters, state: s.code };
+                    setFilters(next);
+                    pushUrl(next, 1);
+                  }}
+                  className={`rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+                    filters.state === s.code
+                      ? "bg-red-50 font-semibold text-red-700"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {s.name}
+                </button>
+              ))}
+            </div>
+          </FilterSection>
+
+          <FilterSection title="Salary offering" icon={DollarSign}>
+            <div className="mt-2 flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  const next = { ...filters, salary: "" };
+                  setFilters(next);
+                  pushUrl(next, 1);
+                }}
+                className={`rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+                  !filters.salary.trim()
+                    ? "bg-red-50 font-semibold text-red-700"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                Any salary
+              </button>
+              {JOB_BROWSE_SALARY_OPTIONS.map((o) => (
                 <button
                   key={o.value}
                   type="button"
-                  onClick={() => { const next = { ...filters, level: o.value }; setFilters(next); pushUrl(next, 1); }}
-                  className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                    jobLevel === o.value 
-                    ? 'bg-red-50 text-red-700 font-semibold' 
-                    : 'text-gray-600 hover:bg-gray-50'
+                  onClick={() => {
+                    const next = { ...filters, salary: o.value };
+                    setFilters(next);
+                    pushUrl(next, 1);
+                  }}
+                  className={`rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+                    filters.salary === o.value
+                      ? "bg-red-50 font-semibold text-red-700"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+          </FilterSection>
+
+          <FilterSection title="Job title" icon={Briefcase}>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {JOB_TITLE_FILTER_OPTIONS.map((o) => (
+                <button
+                  key={o.value || "all-title"}
+                  type="button"
+                  onClick={() => {
+                    const next = { ...filters, jobTitle: o.value };
+                    setFilters(next);
+                    pushUrl(next, 1);
+                  }}
+                  className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
+                    filters.jobTitle === o.value
+                      ? "border-red-600 bg-red-600 text-white"
+                      : "border-gray-200 text-gray-600 hover:border-gray-400"
                   }`}
                 >
                   {o.label}
@@ -263,6 +375,11 @@ export function JobsBrowseWithFilters({ jobs, error, meta, initialFilters }: Job
 
     {/* --- Right Content: job cards from API (filtered client-side) --- */}
     <div className="flex-1 min-w-0">
+      <div className="mb-8">
+        <h3 className="mb-3 text-base font-semibold text-gray-900">Open jobs by state</h3>
+        <JobsBrowseMap markers={markersForMap} />
+      </div>
+
       {error && (
         <div
           className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"

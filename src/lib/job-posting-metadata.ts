@@ -50,6 +50,36 @@ export const EXPECTED_SALARY_RANGE_OPTIONS: ReadonlyArray<{
   { value: "120+", label: "$120k+" },
 ];
 
+/** Salary bands for browse filters (no “not specified” row). */
+export const JOB_BROWSE_SALARY_OPTIONS = EXPECTED_SALARY_RANGE_OPTIONS.filter(
+  (o) => o.value !== "",
+);
+
+/** Browse filter: match shorthand role tokens against job titles. */
+export const JOB_TITLE_FILTER_OPTIONS: ReadonlyArray<{
+  value: string;
+  label: string;
+}> = [
+  { value: "", label: "All roles" },
+  { value: "RN", label: "RN" },
+  { value: "LPN", label: "LPN / LVN" },
+  { value: "CNA", label: "CNA" },
+  { value: "NP", label: "NP" },
+  { value: "PA", label: "PA" },
+];
+
+export function jobTitleFilterMatches(jobTitle: string, filter: string): boolean {
+  const f = filter.trim();
+  if (!f) return true;
+  const t = jobTitle.toLowerCase();
+  if (f === "LPN") {
+    return /\b(lpn|lvn)\b/i.test(jobTitle);
+  }
+  const token = f.toLowerCase();
+  const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`\\b${escaped}\\b`, "i").test(jobTitle) || t.includes(token);
+}
+
 export function expectedSalaryRangeLabel(
   code: string | null | undefined,
 ): string {
@@ -95,8 +125,6 @@ export function jobListingMetaLine(job: {
   const parts: string[] = [];
   const et = employmentTypeLabel(job.employmentType);
   if (et) parts.push(et);
-  const jl = jobLevelLabel(job.jobLevel);
-  if (jl) parts.push(jl);
   const cat = job.jobCategory?.trim();
   if (cat) parts.push(cat);
   const sal = expectedSalaryRangeLabel(job.expectedSalaryRange);
@@ -119,8 +147,6 @@ export function jobRoleDetailEntries(job: {
   if (cat) rows.push({ label: "Category / specialty", value: cat });
   const et = employmentTypeLabel(job.employmentType);
   if (et) rows.push({ label: "Employment type", value: et });
-  const jl = jobLevelLabel(job.jobLevel);
-  if (jl) rows.push({ label: "Job level", value: jl });
   const sal = expectedSalaryRangeLabel(job.expectedSalaryRange);
   if (sal) rows.push({ label: "Expected salary", value: sal });
   const loc = job.location?.trim();

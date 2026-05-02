@@ -51,19 +51,6 @@ export const heroContent = {
           { value: "temporary", label: "Temporary / travel" },
         ],
       },
-      level: {
-        label: "Job Level",
-        name: "level" as const,
-        options: [
-          { value: "", label: "All levels" },
-          { value: "intern", label: "Intern / student" },
-          { value: "entry", label: "Entry / junior" },
-          { value: "mid", label: "Mid level" },
-          { value: "senior", label: "Senior" },
-          { value: "lead", label: "Lead / charge" },
-          { value: "executive", label: "Management / executive" },
-        ],
-      },
       experience: {
         label: "Experience",
         name: "experience" as const,

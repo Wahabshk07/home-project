@@ -54,6 +54,7 @@ export const siteConfig = {
       title: "Job categories",
       /** `category` values align with hero search & client-side job browse filters. */
       links: [
+        { label: "Jobs by state", href: "/jobs/locations" },
         { label: "Critical care (ICU)", href: "/jobs?category=Critical%20care" },
         { label: "Emergency (ED)", href: "/jobs?category=Emergency" },
         { label: "Med-Surg", href: "/jobs?category=Med-Surg" },
@@ -65,6 +66,11 @@ export const siteConfig = {
       ],
     },
   },
+  /**
+   * Footer / social: push `{ label, href }` rows when marketing shares final URLs.
+   * Icons can be wired in `FooterColumns` once this list is non-empty.
+   */
+  footerSocialLinks: [] as ReadonlyArray<{ label: string; href: string }>,
   stats: [
     { value: "12K", label: "Job Posted" },
     { value: "10M", label: "Happy Customers" },

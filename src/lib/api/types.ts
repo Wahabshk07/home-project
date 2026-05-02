@@ -46,6 +46,8 @@ export interface PublicJob {
   jobCategory?: string | null;
   /** Canonical band from employer posting: `40-60` | `60-90` | `90-120` | `120+`. */
   expectedSalaryRange?: string | null;
+  /** US state postal code when set by employer (e.g. GA). */
+  stateCode?: string | null;
   featured: boolean;
   expiresAt: string | null;
   company?: PublicCompany | null;

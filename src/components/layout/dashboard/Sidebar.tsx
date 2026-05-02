@@ -46,7 +46,7 @@ type MenuItem = {
 };
 
 const menuItems: MenuItem[] = [
-  { id: "dashboard", label: "User Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ["nurse", "employer", "admin", "super_admin", "content_admin"] },
+  { id: "dashboard", label: "User Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ["nurse", "employer"] },
   {
     id: "admin-hub",
     label: "Admin dashboard",

@@ -46,6 +46,7 @@ function formatMsgTime(iso: string): string {
 function MessagesPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const applicationIdFromUrl = searchParams.get("applicationId");
   const { user, accessToken, ready } = useAuth();
   const [threads, setThreads] = useState<ThreadRow[]>([]);
   const [activeApplicationId, setActiveApplicationId] = useState<string | null>(null);
@@ -100,6 +101,13 @@ function MessagesPageInner() {
     if (user.role === "employer") void loadThreads();
   }, [ready, user, router, loadThreads]);
 
+  useEffect(() => {
+    if (user?.role !== "employer") return;
+    const id = applicationIdFromUrl?.trim();
+    if (!id) return;
+    setActiveApplicationId(id);
+  }, [user?.role, applicationIdFromUrl]);
+
   useThreadMessagesRealtime(accessToken, user?.role === "employer" ? activeApplicationId : null, user?.role === "employer", setMessages, setLoadingMessages);
 
   async function handleSend(e: FormEvent<HTMLFormElement>) {
@@ -112,7 +120,11 @@ function MessagesPageInner() {
       setInputValue("");
       void loadThreads();
     } catch (err) {
-      setError("Message failed.");
+      const msg =
+        err instanceof BackendRequestError
+          ? err.message
+          : "Message failed.";
+      setError(msg);
     } finally {
       setSending(false);
     }

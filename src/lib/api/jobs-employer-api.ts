@@ -12,6 +12,7 @@ export type EmployerJob = {
   description: string;
   requirements: string | null;
   location: string | null;
+  stateCode?: string | null;
   employmentType?: JobEmploymentType | null;
   jobLevel?: JobLevel | null;
   jobCategory?: string | null;
@@ -32,14 +33,13 @@ export type CreateJobBody = {
   description: string;
   requirements?: string;
   location?: string;
+  /** US state postal code, e.g. GA */
+  stateCode?: string;
   employmentType?: JobEmploymentType;
   jobLevel?: JobLevel;
   jobCategory?: string;
   /** `40-60` | `60-90` | `90-120` | `120+` — omit or empty for unspecified. */
   expectedSalaryRange?: string;
-  featured?: boolean;
-  adminReviewRequired?: boolean;
-  expiresAt?: string;
 };
 
 export type UpdateJobBody = {
@@ -47,14 +47,12 @@ export type UpdateJobBody = {
   description?: string;
   requirements?: string | null;
   location?: string | null;
+  stateCode?: string | null;
   employmentType?: JobEmploymentType | null;
   jobLevel?: JobLevel | null;
   jobCategory?: string | null;
   expectedSalaryRange?: string | null;
   status?: JobStatus;
-  featured?: boolean;
-  adminReviewRequired?: boolean;
-  expiresAt?: string | null;
 };
 
 export async function listEmployerJobs(

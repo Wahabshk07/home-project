@@ -37,10 +37,9 @@ import {
   EMPLOYMENT_TYPE_OPTIONS,
   EXPECTED_SALARY_RANGE_OPTIONS,
   JOB_CATEGORY_SUGGESTIONS,
-  JOB_LEVEL_OPTIONS,
   type JobEmploymentType,
-  type JobLevel,
 } from "@/lib/job-posting-metadata";
+import { US_STATES } from "@/lib/us-states";
 
 // Reusable professional focus classes
 const focusClasses = "outline-none focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all";
@@ -54,14 +53,10 @@ export default function SubmitJobPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [requirements, setRequirements] = useState("");
-  const [location, setLocation] = useState("");
+  const [jobStateCode, setJobStateCode] = useState("");
   const [jobCategory, setJobCategory] = useState("");
   const [employmentType, setEmploymentType] = useState<JobEmploymentType | "">("");
-  const [jobLevel, setJobLevel] = useState<JobLevel | "">("");
   const [expectedSalaryRange, setExpectedSalaryRange] = useState("");
-  const [featured, setFeatured] = useState(false);
-  const [adminReviewRequired, setAdminReviewRequired] = useState(false);
-  const [expiresAt, setExpiresAt] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState<"draft" | "publish" | null>(null);
   const [uploading, setUploading] = useState<"logo" | "hero" | null>(null);
@@ -132,25 +127,23 @@ export default function SubmitJobPage() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    if (!jobStateCode.trim()) {
+      setFormError("Select the job state (location).");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     setSaving(publish ? "publish" : "draft");
     try {
-      let expires: string | undefined;
-      if (expiresAt.trim()) {
-        const d = new Date(expiresAt);
-        if (!Number.isNaN(d.getTime())) expires = d.toISOString();
-      }
+      const state = US_STATES.find((s) => s.code === jobStateCode.trim());
       const job = await createEmployerJob(accessToken, {
         title: title.trim(),
         description: sanitizeJobRichHtml(description.trim()),
         requirements: isRichTextEffectivelyEmpty(requirements) ? undefined : sanitizeJobRichHtml(requirements.trim()),
-        location: location.trim() || undefined,
+        location: state?.name ?? jobStateCode.trim(),
+        stateCode: jobStateCode.trim(),
         jobCategory: jobCategory.trim() || undefined,
         employmentType: employmentType || undefined,
-        jobLevel: jobLevel || undefined,
         expectedSalaryRange: expectedSalaryRange.trim() || undefined,
-        featured,
-        adminReviewRequired,
-        expiresAt: expires,
       });
       if (publish) {
         await updateEmployerJob(accessToken, job.id, { status: "published" });
@@ -367,26 +360,42 @@ export default function SubmitJobPage() {
                 </div>
 
                 <div className="space-y-6">
-                  {[
-                    { label: "Category", val: jobCategory, set: setJobCategory, list: "job-category-suggestions", placeholder: "Search specialties..." },
-                    { label: "Location", val: location, set: setLocation, placeholder: "e.g. Remote, New York" }
-                  ].map((field, i) => (
-                    <div key={i} className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">{field.label}</label>
-                      <input
-                        value={field.val}
-                        onChange={(e) => field.set(e.target.value)}
-                        list={field.list}
-                        placeholder={field.placeholder}
-                        className={`w-full rounded-xl border-2 border-gray-50 bg-gray-50 px-4 py-3 text-sm font-bold hover:border-gray-200 ${focusClasses}`}
-                      />
-                      {field.list && (
-                        <datalist id={field.list}>
-                          {JOB_CATEGORY_SUGGESTIONS.map((s) => <option key={s} value={s} />)}
-                        </datalist>
-                      )}
-                    </div>
-                  ))}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                      Category
+                    </label>
+                    <input
+                      value={jobCategory}
+                      onChange={(e) => setJobCategory(e.target.value)}
+                      list="job-category-suggestions"
+                      placeholder="Search specialties..."
+                      className={`w-full rounded-xl border-2 border-gray-50 bg-gray-50 px-4 py-3 text-sm font-bold hover:border-gray-200 ${focusClasses}`}
+                    />
+                    <datalist id="job-category-suggestions">
+                      {JOB_CATEGORY_SUGGESTIONS.map((s) => (
+                        <option key={s} value={s} />
+                      ))}
+                    </datalist>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                      Job state (location)
+                    </label>
+                    <select
+                      value={jobStateCode}
+                      onChange={(e) => setJobStateCode(e.target.value)}
+                      required
+                      className={`w-full rounded-xl border-2 border-gray-50 bg-gray-50 px-4 py-3 text-sm font-bold hover:border-gray-200 ${focusClasses}`}
+                    >
+                      <option value="">Select US state…</option>
+                      {US_STATES.map((s) => (
+                        <option key={s.code} value={s.code}>
+                          {s.name} ({s.code})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Employment Type</label>
@@ -397,20 +406,6 @@ export default function SubmitJobPage() {
                     >
                       <option value="">Select type...</option>
                       {EMPLOYMENT_TYPE_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Experience Level</label>
-                    <select
-                      value={jobLevel}
-                      onChange={(e) => setJobLevel((e.target.value || "") as JobLevel | "")}
-                      className={`w-full rounded-xl border-2 border-gray-50 bg-gray-50 px-4 py-3 text-sm font-bold hover:border-gray-200 ${focusClasses}`}
-                    >
-                      <option value="">Select level...</option>
-                      {JOB_LEVEL_OPTIONS.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
@@ -431,29 +426,12 @@ export default function SubmitJobPage() {
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
-                <label className="mb-4 block text-[10px] font-black uppercase tracking-widest text-gray-400">Listing Management</label>
-                <div className="relative mb-6">
-                    <Clock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="datetime-local"
-                      value={expiresAt}
-                      onChange={(e) => setExpiresAt(e.target.value)}
-                      className={`w-full rounded-xl border-2 border-gray-50 bg-gray-50 py-3 pl-11 pr-4 text-xs font-bold hover:border-gray-200 ${focusClasses}`}
-                    />
-                </div>
-                
-                <label className={`group relative flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-gray-50 p-4 hover:border-red-600/10 hover:bg-red-50/30 ${focusWithinClasses}`}>
-                    <input
-                      type="checkbox"
-                      checked={featured}
-                      onChange={(e) => setFeatured(e.target.checked)}
-                      className="h-5 w-5 rounded-lg border-gray-300 text-red-600 focus:ring-red-600 outline-none"
-                    />
-                    <div className="flex-1">
-                      <span className="block text-xs font-black uppercase tracking-tight text-red-600">Feature Listing</span>
-                    </div>
-                </label>
+              <div className="rounded-3xl border border-amber-100 bg-amber-50/80 p-6 text-xs font-semibold text-amber-900">
+                <p className="flex items-start gap-2">
+                  <Clock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                  Published listings stay live for <strong>30 days</strong>, then expire automatically.
+                  You can publish again from My Jobs if needed.
+                </p>
               </div>
             </div>
           </aside>

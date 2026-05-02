@@ -184,6 +184,7 @@ export type AuthUser = {
   createdAt: string;
   fullName?: string | null;
   profilePhotoUrl?: string | null;
+  profileBannerUrl?: string | null;
   /** ISO timestamp when an admin removed this nurse from the community hub. */
   communityBannedAt?: string | null;
 };
@@ -246,6 +247,17 @@ export function normalizeAuthUser(payload: AuthUserPayload): AuthUser {
           ? rawBan.trim()
           : null
       : undefined;
+  const bannerRaw = (payload as { profileBannerUrl?: unknown }).profileBannerUrl;
+  const profileBannerUrl =
+    bannerRaw === undefined
+      ? undefined
+      : bannerRaw === null ||
+          (typeof bannerRaw === "string" && bannerRaw.trim() === "")
+        ? null
+        : typeof bannerRaw === "string"
+          ? bannerRaw.trim()
+          : null;
+
   return {
     id: payload.id,
     clientName: payload.clientName,
@@ -254,6 +266,7 @@ export function normalizeAuthUser(payload: AuthUserPayload): AuthUser {
     createdAt: payload.createdAt,
     ...fullNameProp,
     ...(photo ? { profilePhotoUrl: photo } : {}),
+    ...(profileBannerUrl !== undefined ? { profileBannerUrl } : {}),
     ...(role === "nurse" ? { communityBannedAt } : {}),
   };
 }

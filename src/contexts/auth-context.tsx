@@ -39,7 +39,13 @@ type AuthContextValue = {
   logout: () => void;
   updateUser: (
     patch: Partial<
-      Pick<AuthUser, "profilePhotoUrl" | "fullName" | "communityBannedAt">
+      Pick<
+        AuthUser,
+        | "profilePhotoUrl"
+        | "profileBannerUrl"
+        | "fullName"
+        | "communityBannedAt"
+      >
     >,
   ) => void;
 };
@@ -112,7 +118,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const updateUser = useCallback(
-    (patch: Partial<Pick<AuthUser, "profilePhotoUrl" | "fullName" | "communityBannedAt">>) => {
+    (
+      patch: Partial<
+        Pick<
+          AuthUser,
+          | "profilePhotoUrl"
+          | "profileBannerUrl"
+          | "fullName"
+          | "communityBannedAt"
+        >
+      >,
+    ) => {
       setUser((prev) => {
         if (!prev) return prev;
         const next: AuthUser = { ...prev };
@@ -126,6 +142,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             delete next.profilePhotoUrl;
           } else if (typeof v === "string") {
             next.profilePhotoUrl = v.trim();
+          }
+        }
+        if ("profileBannerUrl" in patch) {
+          const v = patch.profileBannerUrl;
+          const cleared =
+            v === null ||
+            v === undefined ||
+            (typeof v === "string" && v.trim() === "");
+          if (cleared) {
+            delete next.profileBannerUrl;
+          } else if (typeof v === "string") {
+            next.profileBannerUrl = v.trim();
           }
         }
         if ("fullName" in patch) {
@@ -147,6 +175,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         if (
           (next.profilePhotoUrl ?? null) === (prev.profilePhotoUrl ?? null) &&
+          (next.profileBannerUrl ?? null) === (prev.profileBannerUrl ?? null) &&
           (next.fullName ?? null) === (prev.fullName ?? null) &&
           (next.communityBannedAt ?? null) === (prev.communityBannedAt ?? null)
         ) {

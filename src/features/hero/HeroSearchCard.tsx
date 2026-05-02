@@ -3,8 +3,14 @@
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { buildJobBrowseSearchParams, emptyJobBrowseFilters } from "@/lib/job-browse-search-params";
+import { US_STATES } from "@/lib/us-states";
 
 import { heroContent } from "./content";
+
+const HERO_STATE_OPTIONS: ReadonlyArray<{ value: string; label: string }> = [
+  { value: "", label: "All states" },
+  ...US_STATES.map((s) => ({ value: s.code, label: `${s.name} (${s.code})` })),
+];
 
 function SearchIcon({ className }: { className?: string }) {
   return (
@@ -111,8 +117,8 @@ export function HeroSearchCard() {
             q: String(fd.get("q") ?? "").trim(),
             category: String(fd.get("category") ?? "").trim(),
             employment: String(fd.get("employment") ?? "").trim(),
-            level: String(fd.get("level") ?? "").trim(),
             experience: String(fd.get("experience") ?? "").trim(),
+            state: String(fd.get("state") ?? "").trim().toUpperCase(),
           };
           router.push(`/jobs${buildJobBrowseSearchParams(f, 1)}`);
         }}
@@ -139,15 +145,11 @@ export function HeroSearchCard() {
             name={s.category.name}
             options={s.category.options}
           />
+          <SelectField label="State" name="state" options={HERO_STATE_OPTIONS} />
           <SelectField
             label={s.jobType.label}
             name={s.jobType.name}
             options={s.jobType.options}
-          />
-          <SelectField
-            label={s.level.label}
-            name={s.level.name}
-            options={s.level.options}
           />
           <SelectField
             label={s.experience.label}

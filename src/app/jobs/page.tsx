@@ -1,5 +1,9 @@
 import { JobsBrowseWithFilters } from "@/components/jobs/jobs-browse-with-filters";
-import { emptyPaginated, getPublicJobs } from "@/lib/api/public-api";
+import {
+  emptyPaginated,
+  getPublicJobMapMarkers,
+  getPublicJobs,
+} from "@/lib/api/public-api";
 import { parseJobBrowseFilters } from "@/lib/job-browse-search-params";
 import type { PublicJob } from "@/lib/api/types";
 import Link from "next/link";
@@ -16,6 +20,7 @@ export default async function BrowseJobsPage({ searchParams }: PageProps) {
   const page = Math.max(1, Number.parseInt(String(sp.page ?? "1"), 10) || 1);
 
   let data = emptyPaginated<PublicJob>(page, PAGE_SIZE);
+  let mapMarkers = await getPublicJobMapMarkers(400).catch(() => []);
   let error: string | null = null;
   try {
     data = await getPublicJobs(page, PAGE_SIZE);
@@ -79,6 +84,7 @@ export default async function BrowseJobsPage({ searchParams }: PageProps) {
             error={error}
             meta={data.meta}
             initialFilters={initialFilters}
+            mapMarkers={mapMarkers}
           />
         </div>
       </div>

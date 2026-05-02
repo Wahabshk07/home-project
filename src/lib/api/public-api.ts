@@ -72,6 +72,13 @@ export function normalizePublicCompany(raw: unknown): PublicCompany {
   };
 }
 
+export type JobMapMarker = {
+  slug: string;
+  title: string;
+  stateCode: string | null;
+  location: string | null;
+};
+
 function readExpiresAt(
   o: Record<string, unknown>,
 ): string | null {
@@ -92,6 +99,7 @@ export function normalizePublicJob(raw: unknown): PublicJob {
       description: "",
       requirements: null,
       location: null,
+      stateCode: null,
       featured: false,
       expiresAt: null,
     };
@@ -110,6 +118,7 @@ export function normalizePublicJob(raw: unknown): PublicJob {
       | undefined,
     jobLevel: (o.jobLevel ?? o.job_level) as PublicJob["jobLevel"] | undefined,
     jobCategory: readStr(o, "jobCategory", "job_category"),
+    stateCode: readStr(o, "stateCode", "state_code"),
     expectedSalaryRange: readStr(
       o,
       "expectedSalaryRange",
@@ -185,6 +194,25 @@ async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
     throw new Error(`API ${res.status}: ${text || res.statusText}`);
   }
   return res.json() as Promise<T>;
+}
+
+export async function getPublicJobMapMarkers(
+  limit = 400,
+): Promise<JobMapMarker[]> {
+  const q = `limit=${encodeURIComponent(String(limit))}`;
+  const raw = await fetchJson<unknown>(`/public/jobs/map-markers?${q}`, {
+    next: { revalidate: 120 },
+  });
+  if (!Array.isArray(raw)) return [];
+  return raw.map((row) => {
+    const o = row as Record<string, unknown>;
+    return {
+      slug: String(o.slug ?? ""),
+      title: String(o.title ?? ""),
+      stateCode: readStr(o, "stateCode", "state_code"),
+      location: readStr(o, "location"),
+    };
+  });
 }
 
 export async function getPublicJobs(

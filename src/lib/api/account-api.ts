@@ -8,6 +8,7 @@ export type AccountMeResponse = {
   role: AuthUserRole;
   fullName: string | null;
   profilePhotoUrl?: string | null;
+  profileBannerUrl?: string | null;
   /** Rich HTML; optional until backend exposes columns */
   description?: string | null;
   cultureText?: string | null;
@@ -55,6 +56,27 @@ export async function clearMyProfilePhoto(
   accessToken: string,
 ): Promise<AccountMeResponse> {
   return authedJson<AccountMeResponse>("/account/me/photo", accessToken, {
+    method: "DELETE",
+  });
+}
+
+export async function uploadMyProfileBanner(
+  accessToken: string,
+  file: File,
+): Promise<AccountMeResponse> {
+  const form = new FormData();
+  form.append("file", file);
+  return authedMultipartJson<AccountMeResponse>(
+    "/account/me/banner",
+    accessToken,
+    form,
+  );
+}
+
+export async function clearMyProfileBanner(
+  accessToken: string,
+): Promise<AccountMeResponse> {
+  return authedJson<AccountMeResponse>("/account/me/banner", accessToken, {
     method: "DELETE",
   });
 }
