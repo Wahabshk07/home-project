@@ -27,7 +27,7 @@ function CloseIcon() {
 
 function ErrorIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-600">
       <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
     </svg>
   );
@@ -70,7 +70,7 @@ export function Header() {
       <header
         className={`sticky top-0 z-50 w-full border-b transition-all duration-200 ease-out ${
           scrolled
-            ? "border-slate-200/80 bg-white/95 shadow-sm backdrop-blur-md"
+            ? "border-gray-200/50 bg-white/90 shadow-sm backdrop-blur-sm"
             : "border-transparent bg-white"
         }`}
       >
@@ -96,14 +96,14 @@ export function Header() {
                   href={item.href}
                   className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                     active
-                      ? "bg-red-50 text-red-700"
-                      : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-cyan-50/70 text-cyan-700"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                   }`}
                 >
                   <span className="flex flex-col items-center gap-1">
                     {active ? (
                       <span
-                        className="h-0.5 w-6 rounded-full bg-red-600"
+                        className="h-0.5 w-6 rounded-full bg-cyan-600"
                         aria-hidden
                       />
                     ) : (
@@ -151,7 +151,7 @@ export function Header() {
                 <button
                   type="button"
                   onClick={() => setShowSignIn(true)}
-                  className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 hover:text-red-700"
+                  className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 hover:text-cyan-700"
                 >
                   <SignInIcon className="opacity-90" /> Sign in
                 </button>
@@ -199,7 +199,7 @@ export function Header() {
                     onClick={() => setOpen(false)}
                     className={`rounded-xl px-3 py-3 text-sm font-medium ${
                       active
-                        ? "bg-red-50 text-red-700"
+                        ? "bg-cyan-50 text-cyan-700"
                         : "text-slate-800 hover:bg-slate-50"
                     }`}
                   >
@@ -296,13 +296,13 @@ export function Header() {
 
               {/* --- ATTRACTIVE ERROR DIALOG --- */}
               {errorMessage && (
-                <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-100 bg-red-50 p-4 animate-shake">
+                <div className="mb-6 flex items-start gap-3 rounded-xl border border-cyan-100 bg-cyan-50 p-4 animate-shake">
                   <div className="shrink-0 mt-0.5">
                     <ErrorIcon />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-sm font-bold text-red-800">Login Issue</h3>
-                    <p className="text-xs text-red-700 mt-0.5 leading-relaxed">
+                    <h3 className="text-sm font-bold text-cyan-800">Login Issue</h3>
+                    <p className="text-xs text-cyan-700 mt-0.5 leading-relaxed">
                       {errorMessage}
                     </p>
                   </div>
@@ -326,13 +326,13 @@ export function Header() {
               <div className="mt-6 border-t border-gray-100 pt-6 text-center">
                 <p className="text-sm text-gray-500">
                   New here?{" "}
-                  <Link href="/register" className="font-bold text-button hover:underline" onClick={handleCloseModal}>
+                  <Link href="/register" className="font-bold text-cyan-600 hover:underline" onClick={handleCloseModal}>
                     Create account
                   </Link>
                 </p>
                 <Link
                   href="/sign-in"
-                  className="mt-2 block text-xs font-medium text-gray-400 hover:text-button transition-colors"
+                  className="mt-2 block text-xs font-medium text-gray-400 hover:text-cyan-600 transition-colors"
                   onClick={handleCloseModal}
                 >
                   Open full-screen sign-in

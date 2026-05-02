@@ -11,17 +11,17 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#3b82f6",
-          dark: "#2563eb",
-          light: "#60a5fa",
+          DEFAULT: "#0891b2",
+          dark: "#0e7490",
+          light: "#06b6d4",
         },
         button: {
-          DEFAULT: "#dc2626",
-          dark: "#b91c1c",
-          light: "#ef4444",
+          DEFAULT: "#0891b2",
+          dark: "#0369a1",
+          light: "#06b6d4",
         },
         footer: {
-          bg: "#172554",
+          bg: "#1e293b",
           muted: "#9ca3af",
         },
       },
