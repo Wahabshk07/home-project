@@ -70,7 +70,7 @@ export function Header() {
       <header
         className={`sticky top-0 z-50 w-full border-b transition-all duration-200 ease-out ${
           scrolled
-            ? "border-slate-200/80 bg-white/95 shadow-sm backdrop-blur-md"
+            ? "border-gray-200/50 bg-white/90 shadow-sm backdrop-blur-sm"
             : "border-transparent bg-white"
         }`}
       >
@@ -96,8 +96,8 @@ export function Header() {
                   href={item.href}
                   className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                     active
-                      ? "bg-cyan-50 text-cyan-700"
-                      : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-cyan-50/70 text-cyan-700"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                   }`}
                 >
                   <span className="flex flex-col items-center gap-1">

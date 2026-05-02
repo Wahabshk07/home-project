@@ -28,10 +28,10 @@ export const ProcessSection = () => {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         
         {/* Header Section */}
-        <div className="text-center mb-10">
-          <h2 className="text-cyan-600 font-extrabold text-4xl md:text-5xl mb-4">Features & Process</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            “Your Path to the Right Nursing Job”
+        <div className="text-center mb-16">
+          <h2 className="text-cyan-600 font-light text-5xl md:text-6xl mb-6">Features & Process</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto font-light text-lg">
+            "Your Path to the Right Nursing Job"
           </p>
         </div>
 

@@ -3,16 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a2332;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --surface: #f9fafb;
+  --background: #fafaf8;
+  --foreground: #1a1a18;
+  --muted: #78766b;
+  --border: #e8e6e1;
+  --surface: #f5f3f0;
   --color-primary: #0891b2;
-  --color-primary-dark: #0e7490;
+  --color-primary-dark: #067a8a;
   --color-button: #0891b2;
-  --color-button-dark: #0369a1;
-  --ring: rgba(8, 145, 178, 0.35);
+  --color-button-dark: #067a8a;
+  --ring: rgba(8, 145, 178, 0.15);
+  --accent-gold: #c9b896;
 }
 
 ::selection {
@@ -35,8 +36,9 @@ body {
   color: var(--foreground);
   background: var(--background);
   text-rendering: optimizeLegibility;
-  line-height: 1.6;
-  letter-spacing: -0.01em;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+  font-weight: 400;
 }
 
 a:focus-visible,
@@ -183,15 +185,15 @@ button:focus-visible {
 @layer components {
   /** Solid brand CTA — use on <button> or <a class="btn"> */
   .btn {
-    @apply inline-flex items-center justify-center rounded-xl bg-cyan-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-600/30 transition-all duration-200;
-    @apply hover:bg-cyan-700 hover:shadow-lg hover:shadow-cyan-700/40 active:scale-95;
+    @apply inline-flex items-center justify-center rounded-lg bg-cyan-600 px-6 py-3 text-sm font-medium text-white shadow-md shadow-cyan-600/20 transition-all duration-300;
+    @apply hover:bg-cyan-700 hover:shadow-lg hover:shadow-cyan-700/25 active:scale-[0.98];
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
   }
   .form-input {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-all duration-200;
-    @apply placeholder:text-slate-400;
-    @apply hover:border-slate-300 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20;
-    @apply disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400;
+    @apply w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-300;
+    @apply placeholder:text-gray-400 placeholder:font-light;
+    @apply hover:border-gray-400 focus:border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-600/15;
+    @apply disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400;
   }
   .input-label {
     @apply mb-1.5 ml-0.5 block select-none text-sm font-medium text-slate-600;
